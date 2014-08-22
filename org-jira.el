@@ -357,7 +357,6 @@ to you, but you can customize jql with a prefix argument. See
                    (issue-id (cdr (assoc 'key issue)))
                    (issue-summary (cdr (assoc 'summary issue)))
                    (issue-headline issue-summary))
-              (message "converting issue: %s" proj-key)
               (let ((project-file (expand-file-name (concat proj-key ".org") org-jira-working-dir)))
                 (setq project-buffer (or (find-buffer-visiting project-file)
                                          (find-file project-file)))
