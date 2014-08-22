@@ -337,12 +337,18 @@ only. With a prefix argument, allow you to customize the jql. See `org-jira-get-
 
 ;;;###autoload
 (defun org-jira-get-issues (issues)
-  "Get list of issues. Default is get unfinished issues assigned
+  "Show an issue buffer to the user. Default is get unfinished issues assigned
 to you, but you can customize jql with a prefix argument. See
 `org-jira-get-issue-list'"
 
   (interactive
    (org-jira-get-issue-list))
+  (org-jira-get-issues-noninteractive issues))
+
+(defun org-jira-get-issues-noninteractive (issues)
+  "Create an issue buffer, noninteractively. Default is get unfinished issues assigned
+to you, but you can customize jql with a prefix argument. See
+`org-jira-get-issue-list'"
   (let (project-buffer)
     (mapc (lambda (issue)
             (let* ((proj-key (cdr (assoc 'project issue)))
