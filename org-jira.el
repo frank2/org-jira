@@ -343,7 +343,9 @@ to you, but you can customize jql with a prefix argument. See
 
   (interactive
    (org-jira-get-issue-list))
-  (org-jira-get-issues-noninteractive issues))
+  (setq project-buffer (org-jira-get-issues-noninteractive issues))
+  (when project-buffer
+    (switch-to-buffer project-buffer)))
 
 (defun org-jira-get-issues-noninteractive (issues)
   "Create an issue buffer, noninteractively. Default is get unfinished issues assigned
@@ -355,6 +357,7 @@ to you, but you can customize jql with a prefix argument. See
                    (issue-id (cdr (assoc 'key issue)))
                    (issue-summary (cdr (assoc 'summary issue)))
                    (issue-headline issue-summary))
+              (message "converting issue: %s" proj-key)
               (let ((project-file (expand-file-name (concat proj-key ".org") org-jira-working-dir)))
                 (setq project-buffer (or (find-buffer-visiting project-file)
                                          (find-file project-file)))
@@ -422,7 +425,16 @@ to you, but you can customize jql with a prefix argument. See
                     (org-jira-update-comments-for-current-issue)
                     )))))
           issues)
-    (switch-to-buffer project-buffer)))
+    project-buffer))
+
+(defun org-jira-get-issues-store-org (issues)
+  "Parse the org-list and store the org buffer."
+  (let* ((active-buffer (current-buffer))
+         (new-buffer (org-jira-get-issues-noninteractive issues)))
+    (when new-buffer
+      (set-buffer new-buffer)
+      (save-buffer)
+      (set-buffer active-buffer))))
 
 ;;;###autoload
 (defun org-jira-update-comment ()
